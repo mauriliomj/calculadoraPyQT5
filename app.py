@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QGridLayout, \
-    QPushButton, QLineEdit, QSizePolicy, QLabel
+    QPushButton, QLineEdit, QSizePolicy, QLabel, QMessageBox
 from datetime import datetime
 
 
@@ -8,22 +8,27 @@ class Calculadora(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        data_e_hora = datetime.now()
-        data_e_hora = data_e_hora.strftime('%A %d %B %y %I:%M')
+        dataEHoraNow = datetime.now()
+        dataEHoraNow = dataEHoraNow.strftime('%A %d %B %y %I:%M')
 
         self.setWindowTitle('Calculadora')
         self.setFixedSize(500, 600)
         self.cw = QWidget()
         self.grid = QGridLayout(self.cw)
         self.display = QLineEdit()
-        self.grid.addWidget(self.display, 0, 0, 1, 5)
+        self.grid.addWidget(self.display, 0, 0, 1, 4)
         self.display.setDisabled(False)
         self.display.setStyleSheet(
             '* {background: white; color black; font-size: 30px;}'
         )
         self.display.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Expanding)
 
-        self.data_e_hora(QLabel(data_e_hora), 5, 3, 1, 2)
+        copia = QPushButton('Copiar')
+        copia.setCheckable(True)
+        copia.clicked.connect(self.copiarColar)
+        self.adicionaBtn(copia, 0, 4, 1, 1)
+
+        self.dataEHora(QLabel(dataEHoraNow), 5, 3, 1, 2)
 
         self.addBotoes(QPushButton('7'), 1, 0, 1, 1)
         self.addBotoes(QPushButton('8'), 1, 1, 1, 1)
@@ -48,7 +53,16 @@ class Calculadora(QMainWindow):
 
         self.setCentralWidget(self.cw)
 
-    def data_e_hora(self, btn, row, col, rowspan, colspan):
+    def copiarColar(self):
+        cc = QApplication.clipboard()
+        cc.clear(mode=cc.Clipboard)
+        cc.setText(self.display.text(), mode=cc.Clipboard)
+        QMessageBox.about(self, 'Resultado', 'Copiado para área de transferência!')
+
+    def adicionaBtn(self, btn, row, col, rowspan, colspan):
+        self.grid.addWidget(btn, row, col, rowspan, colspan)
+
+    def dataEHora(self, btn, row, col, rowspan, colspan):
         self.grid.addWidget(btn, row, col, rowspan, colspan)
 
     def addBotoes(self, btn, row, col, rowspan, colspan, funcao=None, style=None):
@@ -76,6 +90,8 @@ class Calculadora(QMainWindow):
 
 
 if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    clipboard = app.clipboard()
     qt = QApplication(sys.argv)
     calc = Calculadora()
     calc.show()
