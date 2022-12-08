@@ -9,7 +9,7 @@ class Calculadora(QMainWindow):
         super().__init__(parent)
 
         dataEHoraNow = datetime.now()
-        dataEHoraNow = dataEHoraNow.strftime('%A %d %B %y %I:%M')
+        dataEHoraNow = dataEHoraNow.strftime('%A %d %B %y, '+ '%I:%M')
 
         self.setWindowTitle('Calculadora')
         self.setFixedSize(500, 600)
